@@ -1,14 +1,7 @@
 const router = require('express').Router()
-const User = require('./model/user')
+const { createUser } = require('../controller/user')
 
-router.post('/api/user/create',(req,res)=>{
-    const {name,email,password} =req.body
-    const newUser = new User({
-       name,
-       email,
-       password
-    })
-    res.send(newUser)
-})
+
+router.post('/create',createUser)
 
 module.exports = router
