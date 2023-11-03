@@ -1,0 +1,2 @@
+1) install express 
+2) install nodemon globaly -> nodemon pp.js(entry point)
