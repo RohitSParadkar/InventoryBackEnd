@@ -1,3 +1,6 @@
 1) install express 
 2) install nodemon globaly -> nodemon pp.js(entry point)
 api: http://localhost:8000/api/user/create
+
+3) validation :newUser.save() save user in database
+4) 
