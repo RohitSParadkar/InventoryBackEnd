@@ -30,6 +30,10 @@ userSchema.pre('save',async function(next){
    next();
 })
 
+userSchema.methods.comparePassword = function(password){
+    const result = bcrypt.compareSync(password,this.password)    //this is async await method
+    return result
+}
 const User = mongoose.model("user",userSchema);
 User.createIndexes();
 module.exports = User;

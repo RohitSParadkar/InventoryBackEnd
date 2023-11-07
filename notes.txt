@@ -3,4 +3,4 @@
 api: http://localhost:8000/api/user/create
 
 3) validation :newUser.save() save user in database
-4) 
+4) for using env declare configuratio on app.js require('dotenv').config()
