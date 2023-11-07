@@ -16,6 +16,11 @@ const userSchema = new Schema({
         type:String,
         required:true
     },
+    varified:{
+      type:Boolean,   
+      default:false,
+      required:true
+    },
     date:{
         type:Date,
         default:Date.now  //Donn't call the function
