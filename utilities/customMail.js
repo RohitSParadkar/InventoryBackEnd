@@ -11,16 +11,18 @@ exports.generateOTP = () => {
 };
 
 //not use async await instead use promise
-exports.createRandomBytes =()=>{
-  new Promise((resolve,reject)=>{
-    crypto.randomBytes(30,(err,buff)=>{
-        if(err) reject(err)
-
-        const token = buff.toString('hex')
-        resolve(token)
-    })
-  })
-}
+exports.createRandomBytes = () => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(30, (err, buff) => {
+        if (err) {
+          reject(err);
+        } else {
+          const token = buff.toString('hex');
+          resolve(token);
+        }
+      });
+    });
+  };
 
 
 exports.sendMail = async (OTP,email) => {
@@ -82,7 +84,10 @@ exports.sendMail = async (OTP,email) => {
         from: 'raw123para@gmail.com',
         to:`bivega5693@othao.com`, 
         subject: 'Password Reset',
-        html: `<h1>Your link to reset the password:${url}</h1>`
+        html: `<h3>Your link to reset the password:</h1><br>
+        <h4>${url}</h4>
+        ,
+        `
     }
     try {
         const result = await transporter.sendMail(mailOptions);

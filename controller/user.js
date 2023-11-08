@@ -1,8 +1,9 @@
 const User = require("../model/user");
 const nodemailer = require("nodemailer");
 const verificationToken = require('../model/verificationToken')
+const resetToken =require('../model/resetToken')
 const { sendError } = require("./customeError");
-const { generateOTP, sendMail,sendWecomeMail, createRandomBytes } = require("../utilities/customMail");
+const { generateOTP, sendMail,sendWecomeMail, createRandomBytes,sendForgotMail } = require("../utilities/customMail");
 const jwt = require("jsonwebtoken");
 const { isValidObjectId } = require("mongoose");
 const resetPasswordToken = require("../model/resetPasswordToken");
@@ -91,15 +92,39 @@ exports.forgotPassword = async(req,res)=>{
   const user = await User.findOne({email})
   if(!user) sendError(res, "User not found")
 
-  const token = resetPasswordToken.findOne({owner:user._id})
-  console.log(token)
-  if(token) return sendError(res, "await for one hour")
+  const token = await resetPasswordToken.findOne({owner:user._id})
+  if(token) return sendError(res, "await for 5 min")
 
-  //random token 
-  const newToken = await createRandomBytes()
+  console.log("hello world ")
+ 
+  const newToken = await createRandomBytes();
   console.log(newToken)
-  const resetToken =  new resetPasswordToken({owner:user._id,newToken})
+  const resetToken =  new resetPasswordToken({owner:user._id,token:newToken})
   await resetToken.save()
-  sendForgotMail(`http://localhost:3000/resetPassword?token=${newToken}&id=${user._id}`) //react application for 
+  sendForgotMail(`http://localhost:3000/resetPassword?token="puthereNewToken"&id=${user._id}`) //react application for 
+  console.log("forgot mail send")
   res.json({success:true,message:'Password reset successfully send to your email'})
+
+}
+
+exports.resetPassword = async(req,res)=>{
+  const {email} =req.body;
+  if(!email) return sendError(res, "Please enter valid email")
+  
+  const user = await User.findOne({email})
+  if(!user) sendError(res, "User not found")
+
+  const token = await resetToken.findOne({owner:user._id})
+  if(token) return sendError(res, "await for 5 min")
+  
+  console.log("hello world ")
+ 
+  const newToken = await createRandomBytes();
+  console.log(newToken)
+  const resetToken =  new resetPasswordToken({owner:user._id,token:newToken})
+  await resetToken.save()
+  sendForgotMail(`http://localhost:3000/resetPassword?token="puthereNewToken"&id=${user._id}`) //react application for 
+  console.log("forgot mail send")
+  res.json({success:true,message:'Password reset successfully send to your email'})
+
 }
