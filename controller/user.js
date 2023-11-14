@@ -75,7 +75,7 @@ exports.emailVarification = async (req, res) => {
 
   user.varified = true;
   await user.save();
-  sendWecomeMail();
+  sendWecomeMail(user.email);
   res.json({success:true,message:'User Successfully verified',user:{
      name:user.name,
      email : user.email,

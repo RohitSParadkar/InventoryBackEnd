@@ -49,7 +49,7 @@ exports.sendMail = async (OTP,email) => {
   };
 
 
-  exports.sendWecomeMail = async () => {
+  exports.sendWecomeMail = async (email) => {
     const transporter = nodemailer.createTransport({
         service:'gmail',
         auth:{
@@ -59,7 +59,7 @@ exports.sendMail = async (OTP,email) => {
     })
     const mailOptions = {
         from: 'raw123para@gmail.com',
-        to:`bivega5693@othao.com`, //'wilixo8315@othao.com'
+        to:`${email}`, //'wilixo8315@othao.com'
         subject: 'Welcome to our Page',
         html: `<h1>Welcome to our Page</h1>`
     }
