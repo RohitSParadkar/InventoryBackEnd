@@ -72,7 +72,7 @@ exports.sendMail = async (OTP,email) => {
   };
 
 
-  exports.sendForgotMail = async (url) => {
+  exports.sendForgotMail = async (email) => {
     const transporter = nodemailer.createTransport({
         service:'gmail',
         auth:{
@@ -82,10 +82,9 @@ exports.sendMail = async (OTP,email) => {
     })
     const mailOptions = {
         from: 'raw123para@gmail.com',
-        to:`bivega5693@othao.com`, 
+        to:`${email}`, 
         subject: 'Password Reset',
         html: `<h3>Your link to reset the password:</h1><br>
-        <h4>${url}</h4>
         ,
         `
     }

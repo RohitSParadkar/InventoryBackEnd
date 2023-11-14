@@ -87,6 +87,7 @@ exports.emailVarification = async (req, res) => {
 //forgot password 
 exports.forgotPassword = async(req,res)=>{
   const {email} =req.body;
+  console.log(email)
   if(!email) return sendError(res, "Please enter valid email")
   
   const user = await User.findOne({email})
@@ -98,10 +99,11 @@ exports.forgotPassword = async(req,res)=>{
   console.log("hello world ")
  
   const newToken = await createRandomBytes();
+  const url = "this is the url"
   console.log(newToken)
   const resetToken =  new resetPasswordToken({owner:user._id,token:newToken})
   await resetToken.save()
-  sendForgotMail(`http://localhost:3000/resetPassword?token="puthereNewToken"&id=${user._id}`) //react application for 
+  sendForgotMail(email) //react application for 
   console.log("forgot mail send")
   res.json({success:true,message:'Password reset successfully send to your email'})
 
@@ -110,7 +112,7 @@ exports.forgotPassword = async(req,res)=>{
 exports.resetPassword = async(req,res)=>{
   const {email} =req.body;
   if(!email) return sendError(res, "Please enter valid email")
-  
+
   const user = await User.findOne({email})
   if(!user) sendError(res, "User not found")
 
