@@ -1,6 +1,7 @@
 const Products = require('../model/Products');
 
 exports.createProducts = async (req, res) => {
+    console.log("inventory body");
     try {
         const {
             productID,
@@ -11,6 +12,10 @@ exports.createProducts = async (req, res) => {
             expiry
         } = req.body;
 
+        // Convert quantity and amount to integers
+        const parsedQuantity = parseInt(quantity);
+        const parsedAmount = parseInt(amount);
+
         // Check if there is an existing entry with the same category and expiry
         const existingProduct = await Products.findOne({
             productID,
@@ -19,16 +24,15 @@ exports.createProducts = async (req, res) => {
 
         if (existingProduct) {
             // If entry exists, update the amount
-            existingProduct.quantity += quantity;
+            existingProduct.quantity += parsedQuantity;
             await existingProduct.save();
         } else {
-            // If no entry exists, create a new one
             const newProduct = new Products({
                 productID,
                 productName,
                 category,
-                quantity,
-                amount,
+                quantity: parsedQuantity,
+                amount: parsedAmount,
                 expiry
             });
             await newProduct.save();
