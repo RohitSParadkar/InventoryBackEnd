@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const Products = require('../model/Products')
 const nodemailer = require("nodemailer");
 const verificationToken = require('../model/verificationToken')
 const resetToken =require('../model/resetToken')
@@ -130,3 +131,4 @@ exports.resetPassword = async(req,res)=>{
   res.json({success:true,message:'Password reset successfully send to your email'})
 
 }
+
