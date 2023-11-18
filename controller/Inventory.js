@@ -58,6 +58,9 @@ exports.getProductsByName = async (req, res) => {
       const regex = new RegExp(productName, 'i');
   
       const products = await Products.find({ productName: { $regex: regex } });
+  
+      console.log('Retrieved products:', products);
+  
       res.send(products);
     } catch (error) {
       console.error('Error fetching products:', error);
