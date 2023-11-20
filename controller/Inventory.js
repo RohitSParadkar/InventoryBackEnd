@@ -1,6 +1,5 @@
 const Products = require('../model/Products');
 
-
 exports.createProducts = async (req, res) => {
     console.log("inventory body");
     try {
