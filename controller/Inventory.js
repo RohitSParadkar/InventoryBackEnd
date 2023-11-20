@@ -1,4 +1,5 @@
 const Products = require('../model/Products');
+const Transactions = require('../model/Transaction')
 
 
 exports.createProducts = async (req, res) => {
@@ -77,6 +78,69 @@ exports.getProductsByName = async (req, res) => {
         // Retrieve and send the updated list of all products
         const allProducts = await Products.find({});
         res.send(allProducts);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.inventoryByProductid = async (req, res) => {
+    console.log("inventory inventoryByProductid");
+    try {
+        const { productID } = req.body;
+        // Retrieve and send the updated list of all products
+        const allProducts = await Products.find({productID});
+        res.send(allProducts);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.createTransactions = async (req, res) => {
+    console.log("transaction body");
+    try {
+        const {
+            supplierId,
+            productId,
+            category,
+            quantity,
+            amount,
+            type
+        } = req.body;
+
+        // Create a new transaction
+        const newTransaction = new Transactions({
+            supplierId,
+            productId,
+            category,
+            quantity,
+            amount,
+            type
+        });
+
+        // Save the new transaction
+        await newTransaction.save();
+
+        // Update the quantity based on the transaction type
+        const existingProduct = await Products.findOne({ productID: productId });
+
+        if (existingProduct) {
+            if (type === "buy") {
+                // If the transaction type is "buy", add the quantity
+                existingProduct.quantity += parseInt(quantity);
+            } else if (type === "sell") {
+                // If the transaction type is "sell", subtract the quantity
+                existingProduct.quantity -= parseInt(quantity);
+            }
+
+            // Save the updated product
+            await existingProduct.save();
+        }
+
+        // Retrieve and send the updated list of all transactions
+        const allTransactions = await Transactions.find({});
+        res.send(allTransactions);
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
