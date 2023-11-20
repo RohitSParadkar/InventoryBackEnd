@@ -1,8 +1,12 @@
 const mongoose = require("mongoose")
 const { Schema } = mongoose;
 const transactionSchema = new Schema({
-    supplierId: {
+     buyerId: {
         type: Number,
+        required: true
+    },
+    productName:{
+        type: String,
         required: true
     },
     productId: {

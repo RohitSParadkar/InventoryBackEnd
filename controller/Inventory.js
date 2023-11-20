@@ -100,7 +100,7 @@ exports.createTransactions = async (req, res) => {
     console.log("transaction body");
     try {
         const {
-            supplierId,
+            buyerId,
             productId,
             category,
             quantity,
@@ -108,10 +108,18 @@ exports.createTransactions = async (req, res) => {
             type
         } = req.body;
 
+        // Get the product details
+        const existingProduct = await Products.findOne({ productID: productId });
+        
+        if (!existingProduct) {
+            return res.status(404).send('Product not found');
+        }
+
         // Create a new transaction
         const newTransaction = new Transactions({
-            supplierId,
+            buyerId,
             productId,
+            productName: existingProduct.productName, // Include productName in the transaction
             category,
             quantity,
             amount,
@@ -122,22 +130,30 @@ exports.createTransactions = async (req, res) => {
         await newTransaction.save();
 
         // Update the quantity based on the transaction type
-        const existingProduct = await Products.findOne({ productID: productId });
-
-        if (existingProduct) {
-            if (type === "buy") {
-                // If the transaction type is "buy", add the quantity
-                existingProduct.quantity += parseInt(quantity);
-            } else if (type === "sell") {
-                // If the transaction type is "sell", subtract the quantity
-                existingProduct.quantity -= parseInt(quantity);
-            }
-
-            // Save the updated product
-            await existingProduct.save();
+        if (type === "buy") {
+            // If the transaction type is "buy", add the quantity
+            existingProduct.quantity += parseInt(quantity);
+        } else if (type === "sell") {
+            // If the transaction type is "sell", subtract the quantity
+            existingProduct.quantity -= parseInt(quantity);
         }
 
+        // Save the updated product
+        await existingProduct.save();
+
         // Retrieve and send the updated list of all transactions
+        const allTransactions = await Transactions.find({});
+        res.send(allTransactions);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.transactionsList= async (req, res) => {
+    console.log("transactions list");
+    try {
+        // Retrieve and send the updated list of all products
         const allTransactions = await Transactions.find({});
         res.send(allTransactions);
     } catch (error) {
