@@ -161,3 +161,60 @@ exports.transactionsList= async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+exports.getTransactionsByProductName = async (req, res) => {
+    console.log("search transactions by product name");
+    try {
+        const { productName } = req.body;
+
+        console.log('productName:', productName);
+
+        if (!productName) {
+            console.log('Product name is required in the request body');
+            return res.status(400).send('Product name is required in the request body');
+        }
+
+        // Use a regular expression for a case-insensitive partial match
+        const regex = new RegExp(productName, 'i');
+
+        const transactions = await Transactions.find({ productName: { $regex: regex } });
+        res.send(transactions);
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
+exports.OverView = async (req, res) => {
+    console.log("get total buy amount");
+    try {
+        // Filter transactions by type "buy"
+        const buyTransactions = await Transactions.find({ type: "buy" });
+        const sellTransactions = await Transactions.find({ type: "sell" });
+        // Calculate total quantity and amount
+        let cost = 0
+        let sell = 0
+        let profit =0
+
+        buyTransactions.forEach((transaction) => {
+            cost += transaction.quantity*transaction.amount
+        });
+       
+        sellTransactions.forEach((transaction) => {
+            sell += transaction.quantity*transaction.amount
+        });
+        profit = sell -cost
+        // Create a response object with total quantity and amount
+        const response = {
+            cost,
+            sell,
+            profit
+        };
+
+        // Send the response
+        res.send(response);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};

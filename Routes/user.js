@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {createProducts,getProductsByName,inventoryList,inventoryByProductid,createTransactions,transactionsList} = require("../controller/Inventory")
+const {createProducts,getProductsByName,inventoryList,inventoryByProductid,createTransactions,transactionsList,getTransactionsByProductName,OverView} = require("../controller/Inventory")
 const { createUser, signin, emailVarification,forgotPassword} = require('../controller/user')
 const { validateUser, validate } = require('../middlerwares/validator')
 
@@ -39,5 +39,11 @@ router.post('/transactionsList',
 transactionsList
 )
 
+router.post('/getTransactionsByProductName',
+getTransactionsByProductName
+)
+router.post('/OverView',
+OverView
+)
 
 module.exports = router
