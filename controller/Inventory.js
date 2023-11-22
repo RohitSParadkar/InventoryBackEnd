@@ -1,5 +1,6 @@
 const Products = require('../model/Products');
 const Transactions = require('../model/Transaction')
+const {sendTransactionMail } = require("../utilities/customMail");
 
 exports.createProducts = async (req, res) => {
     console.log("inventory body");
@@ -125,10 +126,10 @@ exports.createTransactions = async (req, res) => {
             amount,
             type
         });
-
+ 
         // Save the new transaction
         await newTransaction.save();
-
+        sendTransactionMail(type,newTransaction._id)
         // Update the quantity based on the transaction type
         if (type === "buy") {
             // If the transaction type is "buy", add the quantity

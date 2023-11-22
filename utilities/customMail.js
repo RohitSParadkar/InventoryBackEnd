@@ -97,3 +97,29 @@ exports.sendMail = async (OTP,email) => {
   };
 
 
+  exports.sendTransactionMail = async (type,transactionID) => {
+    console.log("transaction mail send")
+    const transporter = nodemailer.createTransport({
+        service:'gmail',
+        auth:{
+            user:'raw123para@gmail.com',
+            pass:'nnry cxjx yyys vayp'
+        }
+    })
+    const mailOptions = {
+        from: 'raw123para@gmail.com',
+        to:'btksnkpwknc@hldrive.com', 
+        subject: 'Order Summary',
+        html: `<h3>Your ${type} has been placed with transaction ID ${transactionID}</h1><br>
+        ,
+        `
+    }
+    try {
+        const result = await transporter.sendMail(mailOptions);
+        console.log('Email Sent')
+    } catch (error) {
+        console.log(error)
+    }
+  };
+
+
