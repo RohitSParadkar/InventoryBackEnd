@@ -6,7 +6,6 @@ exports.validateUser = [
     .not()
     .isEmpty()
     .withMessage("Name is missing! ")
-    .isLength({ min: 3, max: 20 })
     .withMessage("Name must be in 3-20 character"),
   //--------------------------------email validation
   check("email").normalizeEmail().isEmail().withMessage("Email is invalid"),
