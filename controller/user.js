@@ -10,14 +10,14 @@ const { isValidObjectId } = require("mongoose");
 const resetPasswordToken = require("../model/resetPasswordToken");
 
 exports.createUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { email, password } = req.body;
   //Search for user in database
-  const findUser = await User.findOne({ name });
+  console.log("singup is triggered")
+  const findUser = await User.findOne({email});
   if (findUser) {
     return sendError(res, "This email is already exists");
   }
   const newUser = new User({
-    name,
     email,
     password,
   });
@@ -49,7 +49,7 @@ exports.signin = async (req, res) => {
   });
   res.json({
     success: true,
-    user: { name: user.name, email: user.email, id: user._id, token },
+    user: { email: user.email, id: user._id, token },
   });
 };
 
@@ -78,7 +78,6 @@ exports.emailVarification = async (req, res) => {
   await user.save();
   sendWecomeMail(user.email);
   res.json({success:true,message:'User Successfully verified',user:{
-     name:user.name,
      email : user.email,
      id:user._id
   }})
