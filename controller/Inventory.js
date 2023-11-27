@@ -153,6 +153,19 @@ exports.transactionsList = async (req, res) => {
   }
 };
 
+
+exports.transactionDetail = async (req, res) => {
+  console.log("transactions Detail");
+  try {
+    const { transactionID } = req.body;
+    const transaction = await Transactions.find({ _id: transactionID });
+    res.send(transaction);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 exports.getTransactionsByProductName = async (req, res) => {
   console.log("search transactions by product name");
   try {
