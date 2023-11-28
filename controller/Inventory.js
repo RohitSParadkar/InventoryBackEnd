@@ -194,7 +194,7 @@ exports.getTransactionsByProductName = async (req, res) => {
 };
 
 exports.OverView = async (req, res) => {
-    console.log("get total buy amount and product frequency");
+    console.log("overview api triggered");
     try {
       // Filter transactions by type "buy" and "sell"
       const buyTransactions = await Transactions.find({ type: "buy" });
