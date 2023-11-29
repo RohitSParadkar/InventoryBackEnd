@@ -194,74 +194,78 @@ exports.getTransactionsByProductName = async (req, res) => {
 };
 
 exports.OverView = async (req, res) => {
-    console.log("overview api triggered");
-    try {
+  console.log("overview api triggered");
+  try {
       // Filter transactions by type "buy" and "sell"
       const buyTransactions = await Transactions.find({ type: "buy" });
       const sellTransactions = await Transactions.find({ type: "sell" });
-  
+
       // Calculate total quantity and amount for buy transactions
       let cost = 0;
       buyTransactions.forEach((transaction) => {
-        cost += transaction.quantity * transaction.amount;
+          cost += transaction.quantity * transaction.amount;
       });
-  
+
       // Calculate total quantity and amount for sell transactions
       let sell = 0;
       sellTransactions.forEach((transaction) => {
-        sell += transaction.quantity * transaction.amount;
+          sell += transaction.quantity * transaction.amount;
       });
-  
+
       // Calculate profit
       const profit = sell - cost;
-  
-      // Find the frequency of each product with type "sell" and include product name
+
+      // Find the frequency of each product with type "sell" and include product name and average price
       const productFrequency = await Transactions.aggregate([
-        {
-          $match: {
-            type: "sell",
+          {
+              $match: {
+                  type: "sell",
+              },
           },
-        },
-        {
-          $group: {
-            _id: "$productId",
-            productCount: { $sum: 1 },
+          {
+              $group: {
+                  _id: "$productId",
+                  productCount: { $sum: 1 },
+                  totalAmount: { $sum: { $multiply: ["$quantity", "$amount"] } },
+                  averagePrice: { $avg: "$amount" },
+              },
           },
-        },
-        {
-          $lookup: {
-            from: "products", // The name of the Products collection
-            localField: "_id",
-            foreignField: "productID",
-            as: "productDetails",
+          {
+              $lookup: {
+                  from: "products", // The name of the Products collection
+                  localField: "_id",
+                  foreignField: "productID",
+                  as: "productDetails",
+              },
           },
-        },
-        {
-          $unwind: "$productDetails",
-        },
-        {
-          $project: {
-            productName: "$productDetails.productName",
-            productCount: 1,
+          {
+              $unwind: "$productDetails",
           },
-        },
+          {
+              $project: {
+                  productName: "$productDetails.productName",
+                  productCount: 1,
+                  averagePrice: 1,
+              },
+          },
       ]);
-  
-      // Create a response object with total quantity, amount, profit, and product frequency
+
+      // Create a response object with total quantity, amount, profit, product frequency, and average price
       const response = {
-        cost,
-        sell,
-        profit,
-        productFrequency,
+          cost,
+          sell,
+          profit,
+          productFrequency,
       };
-  
+
       // Send the response
       res.send(response);
-    } catch (error) {
+  } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");
-    }
-  };
+  }
+};
+
 //create Buyer
 exports.createBuyer = async (req, res) => {
   console.log("buyer  is created");
