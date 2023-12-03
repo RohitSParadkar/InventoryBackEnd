@@ -37,6 +37,7 @@ exports.createUser = async (req, res) => {
 exports.signin = async (req, res) => {
   console.log("login triggered")
   const { email, password } = req.body;
+  console.log("signin triggered")
   if (!email.trim() || !password.trim())
     return sendError(res, "Email or password is missing");
   const user = await User.findOne({ email });

@@ -1,6 +1,16 @@
 const router = require('express').Router()
 const {
-    createProducts,getProductsByName,inventoryList,inventoryByProductid,createTransactions,transactionsList,getTransactionsByProductName,OverView,createBuyer,createSeller
+    createProducts,
+    getProductsByName,
+    inventoryList,
+    inventoryByProductid,
+    createTransactions,
+    transactionsList,
+    getTransactionsByProductName,
+    OverView,
+    createBuyer,
+    createSeller,
+    transactionDetail
 } = require("../controller/Inventory")
 const { createUser, signin, emailVarification,forgotPassword} = require('../controller/user')
 const { validateUser, validate } = require('../middlerwares/validator')
@@ -53,5 +63,7 @@ createBuyer
 router.post('/createSeller',
 createSeller
 )
-
+router.post('/transactionDetail',
+transactionDetail
+)
 module.exports = router
